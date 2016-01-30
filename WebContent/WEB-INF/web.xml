@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
+	<context-param>
+		<param-name>slim3.rootPackage</param-name>
+		<param-value>com.ata.apps.budayaku</param-value>
+	</context-param>
+	<context-param>
+		<param-name>javax.servlet.jsp.jstl.fmt.localizationContext
+		</param-name>
+		<param-value>application</param-value>
+	</context-param>
+	<context-param>
+		<param-name>javax.servlet.jsp.jstl.fmt.request.charset</param-name>
+		<param-value>UTF-8</param-value>
+	</context-param>
+	
+	<filter>
+		<filter-name>LoginRequiredFilter</filter-name>
+		<filter-class>com.ata.apps.budayaku.server.LoginRequiredFilter
+		</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>LoginRequiredFilter</filter-name>
+		<url-pattern>/user/*</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+		<dispatcher>INCLUDE</dispatcher>
+	</filter-mapping>
+	<filter>
+		<filter-name>FrontController</filter-name>
+		<filter-class>org.slim3.controller.FrontController</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>FrontController</filter-name>
+		<url-pattern>*</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+		<dispatcher>INCLUDE</dispatcher>
+		<dispatcher>ERROR</dispatcher>
+	</filter-mapping>
+
+
+	<servlet>
+		<servlet-name>InitDataServlet</servlet-name>
+		<servlet-class>com.ata.apps.budayaku.server.InitDataServlet
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>InitDataServlet</servlet-name>
+		<url-pattern>/InitDataServlet</url-pattern>
+	</servlet-mapping>
+
+
+	<error-page>
+		<error-code>404</error-code>
+		<location>/error.jsp</location>
+	</error-page>
+	<error-page>
+		<error-code>403</error-code>
+		<location>/error.jsp</location>
+	</error-page>
+
+	<security-constraint>
+		<web-resource-collection>
+			<url-pattern>*.jsp</url-pattern>
+		</web-resource-collection>
+		<auth-constraint />
+	</security-constraint>
+	<display-name>budayaku</display-name>
+	<welcome-file-list>
+		<welcome-file>index</welcome-file>
+	</welcome-file-list>
+</web-app>

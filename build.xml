@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Deploy From Eclipse" basedir="." default="create">
+
+  <!-- This replace with yours project name and JBoss location: -->
+  <property name="warfile" value="budayaku"/>
+  <property name="deploy" value="~/Download/"/>
+
+  <target name="create">
+    <war destfile="${warfile}.war" webxml="WebContent/WEB-INF/web.xml" update="true">
+      <classes dir="WebContent/WEB-INF/classes"/>
+      <fileset dir="WebContent">
+        <exclude name="WEB-INF/web.xml"/>
+      </fileset>
+    </war>
+  </target>
+  <target name="copy">
+    <copy todir="${deploy}" overwrite="true">
+      <fileset dir=".">
+        <include name="${warfile}.war"/>
+      </fileset>
+    </copy>
+  </target>
+  <target name="clear">
+    <delete includeemptydirs="true">
+      <fileset dir="${deploy}" defaultexcludes="false">
+        <include name="${warfile}.*/**" />
+      </fileset>
+    </delete>
+  </target>
+  <target name="deploy">
+    <antcall target="create"/>
+    <antcall target="clear"/>
+    <antcall target="copy"/>
+  </target>
+
+	<target name="check">
+	  <condition property="deldir">
+	    <available file="${deploy}" type="dir"/>
+	  </condition>
+	 </target>
+
+	  <target name="clean" depends="check" if="deldir"><delete includeemptydirs="true">
+    <fileset dir="deploy" />
+	<fileset dir="WebContent/WEB-INF/classes" />
+</delete>      
+  </target>
+  
+	<target name="compile" description="Compile source">
+    <antcall target="clean"/>
+	    	    
+        <mkdir dir="deploy" />
+		<mkdir dir="WebContent/WEB-INF/classes" />
+        
+        <javac target="1.6" srcdir="src" includes="**" destdir="WebContent/WEB-INF/classes" >
+		<classpath>
+			
+			<pathelement location="/usr/share/tomcat7/lib/servlet-api.jar" />
+			<pathelement  location="WebContent/WEB-INF/lib/antlr-2.7.6.jar"/>
+			<pathelement  location="WebContent/WEB-INF/lib/c3p0-0.9.1.jar"/>
+			<pathelement  location="WebContent/WEB-INF/lib/cglib-2.2.jar"/>
+			<pathelement  location="WebContent/WEB-INF/lib/commons-collections-3.1.jar"/>
+			<pathelement  location="WebContent/WEB-INF/lib/commons-fileupload-1.2.1.jar"/>
+			<pathelement  location="WebContent/WEB-INF/lib/commons-io-1.4.jar"/>
+			<pathelement  location="WebContent/WEB-INF/lib/dom4j-1.6.1.jar"/>
+			<pathelement  location="WebContent/WEB-INF/lib/ejb3-persistence.jar"/>
+			<pathelement  location="WebContent/WEB-INF/lib/hibernate-annotations.jar"/>
+			<pathelement  location="WebContent/WEB-INF/lib/hibernate-commons-annotations.jar"/>
+			<pathelement  location="WebContent/WEB-INF/lib/hibernate3.jar"/>
+			<pathelement  location="WebContent/WEB-INF/lib/jackson-core-asl-1.9.9.jar"/>
+			<pathelement  location="WebContent/WEB-INF/lib/jackson-mapper-asl-1.9.9.jar"/>
+			<pathelement  location="WebContent/WEB-INF/lib/javassist-3.9.0.GA.jar"/>
+			<pathelement  location="WebContent/WEB-INF/lib/jdo2-api-2.3-eb.jar"/>
+			<pathelement  location="WebContent/WEB-INF/lib/joda-time-2.2.jar"/>
+			<pathelement  location="WebContent/WEB-INF/lib/jsr107cache-1.1.jar"/>
+			<pathelement  location="WebContent/WEB-INF/lib/jta-1.1.jar"/>
+			<pathelement  location="WebContent/WEB-INF/lib/log4j-1.2.14.jar"/>
+			<pathelement  location="WebContent/WEB-INF/lib/mysql-connector-java-5.1.18-bin.jar"/>
+			<pathelement  location="WebContent/WEB-INF/lib/org.restlet.ext.jackson.jar"/>
+			<pathelement  location="WebContent/WEB-INF/lib/org.restlet.ext.servlet.jar"/>
+			<pathelement  location="WebContent/WEB-INF/lib/org.restlet.jar"/>
+			<pathelement  location="WebContent/WEB-INF/lib/slf4j-api-1.5.8.jar"/>
+			<pathelement  location="WebContent/WEB-INF/lib/slf4j-log4j12-1.5.8.jar"/>
+			<pathelement  location="WebContent/WEB-INF/lib/slim3-1.0.16.jar"/>	
+			<pathelement  location="WebContent/WEB-INF/lib/firebase-client-jvm-2.5.0.jar"/>	
+			<pathelement  location="WebContent/WEB-INF/lib/firebase-token-generator.jar"/>	
+			<pathelement  location="WebContent/WEB-INF/lib/json-20090211.jar"/>	
+			<pathelement  location="WebContent/WEB-INF/lib/commons-codec-1.7.jar"/>	
+			
+      </classpath>            
+        </javac>
+        <copy todir="deploy/WEB-INF/lib">
+            <fileset dir="WebContent/WEB-INF/lib" />
+        </copy>
+        <copy todir="deploy/WEB-INF/lib">
+            <fileset dir="WebContent/WEB-INF/lib" />
+        </copy>
+        <copy todir="deploy/">
+            <fileset dir="WebContent/" />
+        </copy>
+        <copy todir="deploy/WEB-INF/classes">
+        	<resources>
+        	      <file file="src/c3p0.properties"/>
+      	      <file file="src/hibernate.cfg.xml"/>
+        	      <file file="src/log4j.properties"/>
+      	      <file file="src/logging.properties"/>
+        	</resources>
+        </copy>
+        
+    <war destfile="${warfile}.war" webxml="WebContent/WEB-INF/web.xml" update="true">
+      <classes dir="deploy/WEB-INF/classes"/>
+      <fileset dir="deploy">
+      </fileset>
+    </war>
+        
+    </target>
+
+    <target name="jar" description="Package into JAR" depends="compile">
+        <jar destfile="project.jar" basedir="bin" compress="true" />
+        <delete dir="bin" />
+    </target>  
+  
+</project>
